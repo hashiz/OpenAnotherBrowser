@@ -18,6 +18,13 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".OpenChromeActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.APP_BROWSER"/>
+                <data android:mimeType="text/*"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
