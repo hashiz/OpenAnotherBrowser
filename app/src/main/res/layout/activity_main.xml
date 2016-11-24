@@ -10,14 +10,6 @@
     app:layout_scrollFlags="scroll"
     >
 
-    <fragment
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:name="jp.meridiani.apps.openwithchrome.ChoseBrowserFragment"
-        android:id="@+id/fragment"
-        tools:layout="@layout/fragment_chosebrowser"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

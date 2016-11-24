@@ -3,15 +3,8 @@ package jp.meridiani.apps.openwithchrome;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.appindexing.Thing;
-import com.google.android.gms.common.api.GoogleApiClient;
-
-import android.net.Uri;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 public class OpenChromeActivity extends AppCompatActivity {
@@ -29,7 +22,7 @@ public class OpenChromeActivity extends AppCompatActivity {
             finish();
             return;
         }
-        if (!(intent.getAction() == Intent.ACTION_SEND &&
+        if (!(Intent.ACTION_SEND.equals(intent.getAction()) &&
                 intent.getType().equals("text/plain") &&
                 intent.getStringExtra(Intent.EXTRA_TEXT) == null)) {
             finish();
