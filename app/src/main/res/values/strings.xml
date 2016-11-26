@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Open with chrome</string>
+    <string name="app_name" translatable="false">Open with Another Browser</string>
     <string name="action_settings">Settings</string>
     <string name="select_browser">Select browser</string>
 </resources>

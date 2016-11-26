@@ -10,7 +10,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name="jp.meridiani.apps.openwithanotherbrowser.OpenChromeActivity"
-            android:label="Open with chrome"
+            android:label="Open with Another Browser"
             android:theme="@android:style/Theme.NoDisplay">
             <intent-filter>
                 <action android:name="android.intent.action.SEND"/>
