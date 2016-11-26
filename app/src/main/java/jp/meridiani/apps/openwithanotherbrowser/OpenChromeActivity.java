@@ -1,7 +1,6 @@
-package jp.meridiani.apps.openwithchrome;
+package jp.meridiani.apps.openwithanotherbrowser;
 
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -12,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 
 public class OpenChromeActivity extends AppCompatActivity {
@@ -37,31 +35,30 @@ public class OpenChromeActivity extends AppCompatActivity {
             ArrayList<Intent> targetIntents = new ArrayList<Intent>();
 
             PackageManager pm = getPackageManager();
-            Uri dummyUri = Uri.fromParts(targetUri.getScheme(), "", "");
             Intent dummy = new Intent();
             dummy.setAction(Intent.ACTION_VIEW);
             dummy.addCategory(Intent.CATEGORY_DEFAULT);
             dummy.setType("text/plain");
-            dummy.setData(dummyUri);
-            List<ResolveInfo> rInfos = pm.queryIntentActivities(dummy, 0);
-            for ( ResolveInfo rInfo : rInfos ) {
-                Intent target = new Intent();
-                target.setAction(Intent.ACTION_VIEW);
-                target.setPackage(rInfo.activityInfo.packageName);
-                target.addCategory(Intent.CATEGORY_DEFAULT);
-                target.setType("text/plain");
-                target.setData(targetUri);
-                targetIntents.add(target);
+            dummy.setData(targetUri);
+
+            List<PackageInfo> pkgList = pm.getInstalledPackages(0);
+            for ( PackageInfo pkgInfo : pkgList ) {
+                dummy.setPackage(pkgInfo.packageName);
+                List<ResolveInfo> resolveList = pm.queryIntentActivities(dummy, 0);
+                if (resolveList != null && resolveList.size() > 0) {
+                    Intent target = new Intent(dummy);
+                    targetIntents.add(target);
+                }
             }
             if ( targetIntents.size() < 1 ) {
                 Toast.makeText(getApplicationContext(), "no more browser found", Toast.LENGTH_LONG).show();
                 return;
             }
 
-            Intent chooser = Intent.createChooser(
-                    targetIntents.remove(0),
-                    getString(R.string.select_browser)
-            );
+            Intent chooser = new Intent();
+            chooser.setAction(Intent.ACTION_CHOOSER);
+            chooser.putExtra(Intent.EXTRA_TITLE, getString(R.string.select_browser));
+            chooser.putExtra(Intent.EXTRA_INTENT, new Intent());
             if (targetIntents.size() > 0) {
                 chooser.putExtra(
                         Intent.EXTRA_INITIAL_INTENTS,

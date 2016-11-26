@@ -1,4 +1,4 @@
-package jp.meridiani.apps.openwithchrome;
+package jp.meridiani.apps.openwithanotherbrowser;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
