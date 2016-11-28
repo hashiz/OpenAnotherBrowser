@@ -1,11 +1,13 @@
-package jp.meridiani.apps.openwithanotherbrowser;
+package jp.meridiani.apps.openwith;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
@@ -13,12 +15,11 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OpenChromeActivity extends AppCompatActivity {
+public class OpenWithActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         try {
             Intent intent = getIntent();
             if (intent == null) {
@@ -55,22 +56,25 @@ public class OpenChromeActivity extends AppCompatActivity {
                 return;
             }
 
-            Intent chooser = new Intent();
-            chooser.setAction(Intent.ACTION_CHOOSER);
-            chooser.putExtra(Intent.EXTRA_TITLE, getString(R.string.select_browser));
-            chooser.putExtra(Intent.EXTRA_INTENT, new Intent());
             if (targetIntents.size() > 0) {
+                Intent chooser = new Intent(Intent.ACTION_CHOOSER);
+                chooser.putExtra(Intent.EXTRA_INTENT, new Intent()); // dummy
+                chooser.putExtra(Intent.EXTRA_TITLE, getString(R.string.select_browser));
                 chooser.putExtra(
                         Intent.EXTRA_INITIAL_INTENTS,
                         targetIntents.toArray(new Parcelable[targetIntents.size()])
                 );
+                startActivity(chooser);
+            }
+            else {
+                finish();
             }
 
-            startActivity(chooser);
             return;
         }
         catch (Exception e) {
             Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            e.printStackTrace();
             return;
         }
         finally {
