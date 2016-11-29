@@ -31,7 +31,25 @@ public class OpenWithActivity extends Activity {
                     (extra = intent.getExtras()) != null)) {
                 return;
             }
-            Uri targetUri = Uri.parse(extra.getString(Intent.EXTRA_TEXT));
+            String text = extra.getString(Intent.EXTRA_TEXT);
+            if (text == null) {
+                Toast.makeText(getApplicationContext(), getString(R.string.cant_handle_data), Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            Uri targetUri = null;
+            boolean header = true;
+            String[] lines = text.split("\r?\n");
+            if ( lines.length < 1 ) {
+                Toast.makeText(getApplicationContext(), getString(R.string.cant_handle_data), Toast.LENGTH_LONG).show();
+                return;
+            }
+            else if ( lines.length < 2 ) {
+                targetUri = Uri.parse(lines[0]);
+            }
+            else {
+                targetUri = Uri.parse(lines[lines.length-1]);
+            }
 
             ArrayList<Intent> targetIntents = new ArrayList<Intent>();
 
@@ -43,7 +61,7 @@ public class OpenWithActivity extends Activity {
             query.setData(targetUri);
 
             List<ResolveInfo> resolveList = pm.queryIntentActivities(query, PackageManager.MATCH_ALL);
-            if (resolveList == null && resolveList.size() < 1) {
+            if (resolveList == null || resolveList.size() < 1) {
                 Toast.makeText(getApplicationContext(), getString(R.string.no_more_browser_found), Toast.LENGTH_LONG).show();
                 return;
             }

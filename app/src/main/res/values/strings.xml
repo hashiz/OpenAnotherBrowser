@@ -4,4 +4,5 @@
     <string name="select_browser">Select browser</string>
     <string name="open_with_browser">Open With Browser</string>
     <string name="no_more_browser_found">no more browser found</string>
+    <string name="cant_handle_data">Can\'t handle data</string>
 </resources>
