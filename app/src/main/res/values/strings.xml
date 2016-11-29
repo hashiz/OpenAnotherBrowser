@@ -5,4 +5,5 @@
     <string name="open_with_browser">Open With Browser</string>
     <string name="no_more_browser_found">no more browser found</string>
     <string name="cant_handle_data">Can\'t handle data</string>
+    <string name="this_app_found_in_appshare">This app found in share menu</string>
 </resources>

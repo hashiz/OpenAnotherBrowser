@@ -5,4 +5,5 @@
     <string name="open_with_browser">ブラウザで開く</string>
     <string name="no_more_browser_found">ブラウザが見つかりません</string>
     <string name="cant_handle_data">このデータは扱えません</string>
+    <string name="this_app_found_in_appshare">このアプリは共有メニューにあります</string>
 </resources>
