@@ -7,14 +7,27 @@ android {
         applicationId 'jp.meridiani.apps.openwith'
         minSdkVersion 14
         targetSdkVersion 24
-        versionCode 1
-        versionName "1.0"
+        versionCode 1001
+        versionName '1.1'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            if (output.outputFile != null && output.outputFile.name.endsWith('.apk')) {
+                // Rename APK
+                def appIdSplit = defaultConfig.applicationId.split("\\.")
+                def applicationName = appIdSplit[appIdSplit.length - 1]
+                def versionName = defaultConfig.versionName
+                def buildType = variant.buildType.name
+                def newName = "${applicationName}-${buildType}-${versionName}.apk"
+                output.outputFile = new File(output.outputFile.parent, newName)
+            }
         }
     }
     productFlavors {

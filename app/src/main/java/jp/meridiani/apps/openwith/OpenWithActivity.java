@@ -57,6 +57,7 @@ public class OpenWithActivity extends Activity {
             Intent query = new Intent();
             query.setAction(Intent.ACTION_VIEW);
             query.addCategory(Intent.CATEGORY_DEFAULT);
+            query.addCategory(Intent.CATEGORY_BROWSABLE);
             query.setType("text/plain");
             query.setData(targetUri);
 
