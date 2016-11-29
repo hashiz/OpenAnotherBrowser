@@ -36,40 +36,31 @@ public class OpenWithActivity extends Activity {
             ArrayList<Intent> targetIntents = new ArrayList<Intent>();
 
             PackageManager pm = getPackageManager();
-            Intent dummy = new Intent();
-            dummy.setAction(Intent.ACTION_VIEW);
-            dummy.addCategory(Intent.CATEGORY_DEFAULT);
-            dummy.setType("text/plain");
-            dummy.setData(targetUri);
+            Intent query = new Intent();
+            query.setAction(Intent.ACTION_VIEW);
+            query.addCategory(Intent.CATEGORY_DEFAULT);
+            query.setType("text/plain");
+            query.setData(targetUri);
 
-            List<PackageInfo> pkgList = pm.getInstalledPackages(0);
-            for ( PackageInfo pkgInfo : pkgList ) {
-                dummy.setPackage(pkgInfo.packageName);
-                List<ResolveInfo> resolveList = pm.queryIntentActivities(dummy, 0);
-                if (resolveList != null && resolveList.size() > 0) {
-                    Intent target = new Intent(dummy);
-                    targetIntents.add(target);
-                }
-            }
-            if ( targetIntents.size() < 1 ) {
-                Toast.makeText(getApplicationContext(), "no more browser found", Toast.LENGTH_LONG).show();
+            List<ResolveInfo> resolveList = pm.queryIntentActivities(query, PackageManager.MATCH_ALL);
+            if (resolveList == null && resolveList.size() < 1) {
+                Toast.makeText(getApplicationContext(), getString(R.string.no_more_browser_found), Toast.LENGTH_LONG).show();
                 return;
             }
-
-            if (targetIntents.size() > 0) {
-                Intent chooser = new Intent(Intent.ACTION_CHOOSER);
-                chooser.putExtra(Intent.EXTRA_INTENT, new Intent()); // dummy
-                chooser.putExtra(Intent.EXTRA_TITLE, getString(R.string.select_browser));
-                chooser.putExtra(
-                        Intent.EXTRA_INITIAL_INTENTS,
-                        targetIntents.toArray(new Parcelable[targetIntents.size()])
-                );
-                startActivity(chooser);
-            }
-            else {
-                finish();
+            for (ResolveInfo info : resolveList) {
+                Intent target = new Intent(query);
+                target.setClassName(info.activityInfo.packageName,info.activityInfo.name);
+                targetIntents.add(target);
             }
 
+            Intent chooser = new Intent(Intent.ACTION_CHOOSER);
+            chooser.putExtra(Intent.EXTRA_INTENT, new Intent()); // dummy
+            chooser.putExtra(Intent.EXTRA_TITLE, getString(R.string.select_browser));
+            chooser.putExtra(
+                    Intent.EXTRA_INITIAL_INTENTS,
+                    targetIntents.toArray(new Parcelable[targetIntents.size()])
+            );
+            startActivity(chooser);
             return;
         }
         catch (Exception e) {

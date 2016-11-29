@@ -3,4 +3,5 @@
     <string name="action_settings">Settings</string>
     <string name="select_browser">Select browser</string>
     <string name="open_with_browser">Open With Browser</string>
+    <string name="no_more_browser_found">no more browser found</string>
 </resources>
