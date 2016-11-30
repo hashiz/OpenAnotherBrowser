@@ -25,20 +25,17 @@ public class OpenWithActivity extends Activity {
             if (intent == null) {
                 return;
             }
-            Bundle extra;
-            if (!(Intent.ACTION_SEND.equals(intent.getAction()) &&
-                    intent.getType().equals("text/plain") &&
-                    (extra = intent.getExtras()) != null)) {
-                return;
-            }
-            String text = extra.getString(Intent.EXTRA_TEXT);
-            if (text == null) {
+            String action = intent.getAction();
+            String mimeType = intent.getType();
+            String text = intent.getStringExtra(Intent.EXTRA_TEXT);
+            if (!(Intent.ACTION_SEND.equals(action) &&
+                    "text/plain".equals(mimeType) &&
+                    text != null)) {
                 Toast.makeText(getApplicationContext(), getString(R.string.cant_handle_data), Toast.LENGTH_LONG).show();
                 return;
             }
 
             Uri targetUri = null;
-            boolean header = true;
             String[] lines = text.split("\r?\n");
             if ( lines.length < 1 ) {
                 Toast.makeText(getApplicationContext(), getString(R.string.cant_handle_data), Toast.LENGTH_LONG).show();
@@ -58,13 +55,29 @@ public class OpenWithActivity extends Activity {
             query.setAction(Intent.ACTION_VIEW);
             query.addCategory(Intent.CATEGORY_DEFAULT);
             query.addCategory(Intent.CATEGORY_BROWSABLE);
-            query.setType("text/plain");
             query.setData(targetUri);
 
             List<ResolveInfo> resolveList = pm.queryIntentActivities(query, PackageManager.MATCH_ALL);
             if (resolveList == null || resolveList.size() < 1) {
                 Toast.makeText(getApplicationContext(), getString(R.string.no_more_browser_found), Toast.LENGTH_LONG).show();
                 return;
+            }
+            else if (resolveList.size() < 2) {
+                Intent dummy = new Intent(query);
+                dummy.setData(Uri.parse("http://")); // set dummy uri
+                List<ResolveInfo> dummyList = pm.queryIntentActivities(dummy, PackageManager.MATCH_ALL);
+                for (ResolveInfo dummyInfo : dummyList) {
+                    for (ResolveInfo rInfo : resolveList) {
+                        if (rInfo.activityInfo.packageName.equals(dummyInfo.activityInfo.packageName) &&
+                                rInfo.activityInfo.name.equals(dummyInfo.activityInfo.name)) {
+                            dummyList.remove(dummyInfo);
+
+                        }
+                    }
+                }
+                if (dummyList != null) {
+                    resolveList.addAll(dummyList);
+                }
             }
             for (ResolveInfo info : resolveList) {
                 Intent target = new Intent(query);
