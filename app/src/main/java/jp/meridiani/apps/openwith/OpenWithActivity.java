@@ -63,20 +63,22 @@ public class OpenWithActivity extends Activity {
                 return;
             }
             else if (resolveList.size() < 2) {
-                Intent dummy = new Intent(query);
-                dummy.setData(Uri.parse("http://")); // set dummy uri
-                List<ResolveInfo> dummyList = pm.queryIntentActivities(dummy, PackageManager.MATCH_ALL);
-                for (ResolveInfo dummyInfo : dummyList) {
-                    for (ResolveInfo rInfo : resolveList) {
-                        if (rInfo.activityInfo.packageName.equals(dummyInfo.activityInfo.packageName) &&
-                                rInfo.activityInfo.name.equals(dummyInfo.activityInfo.name)) {
-                            dummyList.remove(dummyInfo);
-
+                String scheme = targetUri.getScheme();
+                if (scheme != null && scheme.matches("^https?$")) {
+                    Intent dummy = new Intent(query);
+                    dummy.setData(Uri.fromParts(scheme, "", "")); // set dummy uri
+                    List<ResolveInfo> dummyList = pm.queryIntentActivities(dummy, PackageManager.MATCH_ALL);
+                    for (ResolveInfo dummyInfo : dummyList) {
+                        for (ResolveInfo rInfo : resolveList) {
+                            if (rInfo.activityInfo.packageName.equals(dummyInfo.activityInfo.packageName) &&
+                                    rInfo.activityInfo.name.equals(dummyInfo.activityInfo.name)) {
+                                dummyList.remove(dummyInfo);
+                            }
                         }
                     }
-                }
-                if (dummyList != null) {
-                    resolveList.addAll(dummyList);
+                    if (dummyList != null) {
+                        resolveList.addAll(dummyList);
+                    }
                 }
             }
             for (ResolveInfo info : resolveList) {
