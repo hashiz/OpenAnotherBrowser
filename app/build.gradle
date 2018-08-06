@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "24.0.2"
+    buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId 'jp.meridiani.apps.openwith'
         minSdkVersion 14
@@ -18,15 +18,15 @@ android {
         }
     }
     applicationVariants.all { variant ->
-        variant.outputs.each { output ->
-            if (output.outputFile != null && output.outputFile.name.endsWith('.apk')) {
+        variant.outputs.all { output ->
+            if (output.outputFileName != null && output.outputFileName.endsWith('.apk')) {
                 // Rename APK
                 def appIdSplit = defaultConfig.applicationId.split("\\.")
                 def applicationName = appIdSplit[appIdSplit.length - 1]
                 def versionName = defaultConfig.versionName
                 def buildType = variant.buildType.name
                 def newName = "${applicationName}-${buildType}-${versionName}.apk"
-                output.outputFile = new File(output.outputFile.parent, newName)
+                output.outputFileName = newName
             }
         }
     }
